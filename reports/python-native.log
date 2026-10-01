@@ -1,0 +1,49 @@
+test_changed_model_reembeds_all (test_bridge.CatalogTests.test_changed_model_reembeds_all) ... ok
+test_deletion_without_other_changes (test_bridge.CatalogTests.test_deletion_without_other_changes) ... ok
+test_failed_embedding_preserves_snapshot (test_bridge.CatalogTests.test_failed_embedding_preserves_snapshot) ... ok
+test_filter_before_top_k (test_bridge.CatalogTests.test_filter_before_top_k) ... ok
+test_import_sqlite_and_jsonl (test_bridge.CatalogTests.test_import_sqlite_and_jsonl) ... ok
+test_incremental_no_writes (test_bridge.CatalogTests.test_incremental_no_writes) ... ok
+test_only_changed_document_embedded (test_bridge.CatalogTests.test_only_changed_document_embedded) ... ok
+test_small_catalog_keeps_nonlexical_candidates (test_bridge.CatalogTests.test_small_catalog_keeps_nonlexical_candidates) ... ok
+test_source_database_cannot_be_used_as_cache (test_bridge.CatalogTests.test_source_database_cannot_be_used_as_cache) ... ok
+test_sqlite_discovery_candidate_is_not_imported (test_bridge.CatalogTests.test_sqlite_discovery_candidate_is_not_imported) ... ok
+test_untrusted_manifest_exec_not_imported (test_bridge.CatalogTests.test_untrusted_manifest_exec_not_imported) ... ok
+test_auto_falls_back_for_incompatible_library (test_bridge.CommandTests.test_auto_falls_back_for_incompatible_library) ... ok
+test_python_cli (test_bridge.CommandTests.test_python_cli) ... ok
+test_rust_jsonl_cli (test_bridge.CommandTests.test_rust_jsonl_cli) ... ok
+test_ollama_and_openai_wire_protocol (test_bridge.HTTPTests.test_ollama_and_openai_wire_protocol) ... ok
+test_real_compile_endpoint_and_policy_boundary (test_bridge.HTTPTests.test_real_compile_endpoint_and_policy_boundary) ... ok
+test_empty_mask_ties (test_bridge.KernelTests.test_empty_mask_ties) ... ok
+test_randomized_native_python_numpy_parity (test_bridge.KernelTests.test_randomized_native_python_numpy_parity) ... ok
+test_reject_invalid_vectors (test_bridge.KernelTests.test_reject_invalid_vectors) ... ok
+test_assignability_conservative (test_bridge.PlanTests.test_assignability_conservative) ... ok
+test_digest_and_catalog_drift (test_bridge.PlanTests.test_digest_and_catalog_drift) ... ok
+test_direction_contract_rejected (test_bridge.PlanTests.test_direction_contract_rejected) ... ok
+test_forward_reference_rejected (test_bridge.PlanTests.test_forward_reference_rejected) ... ok
+test_no_arbitrary_exec_binding (test_bridge.PlanTests.test_no_arbitrary_exec_binding) ... ok
+test_non_guaranteed_output_rejected (test_bridge.PlanTests.test_non_guaranteed_output_rejected) ... ok
+test_reference_type_rejected (test_bridge.PlanTests.test_reference_type_rejected) ... ok
+test_runtime_output_validation (test_bridge.PlanTests.test_runtime_output_validation) ... ok
+test_steps_budget (test_bridge.PlanTests.test_steps_budget) ... ok
+test_unicode_large_int_and_escaping (test_bridge.PlanTests.test_unicode_large_int_and_escaping) ... ok
+test_valid_dataflow_executes (test_bridge.PlanTests.test_valid_dataflow_executes) ... ok
+test_actual_repair_feedback (test_bridge.RuntimeTests.test_actual_repair_feedback) ... ok
+test_embedder_identity_guard (test_bridge.RuntimeTests.test_embedder_identity_guard) ... ok
+test_exact_missing_args (test_bridge.RuntimeTests.test_exact_missing_args) ... ok
+test_exact_uri_no_model (test_bridge.RuntimeTests.test_exact_uri_no_model) ... ok
+test_extra_exec_field_rejected (test_bridge.RuntimeTests.test_extra_exec_field_rejected) ... ok
+test_injected_uri_not_allowed (test_bridge.RuntimeTests.test_injected_uri_not_allowed) ... ok
+test_model_error_not_unsupported (test_bridge.RuntimeTests.test_model_error_not_unsupported) ... ok
+test_model_revision_cache (test_bridge.RuntimeTests.test_model_revision_cache) ... ok
+test_multistep_model_dataflow (test_bridge.RuntimeTests.test_multistep_model_dataflow) ... ok
+test_null_clarify_valid (test_bridge.RuntimeTests.test_null_clarify_valid) ... ok
+test_policy_context_and_revision_cache (test_bridge.RuntimeTests.test_policy_context_and_revision_cache) ... ok
+test_query_and_depth_limits (test_bridge.RuntimeTests.test_query_and_depth_limits) ... ok
+test_two_phase_not_first_candidate (test_bridge.RuntimeTests.test_two_phase_not_first_candidate) ... ok
+test_unsupported_valid (test_bridge.RuntimeTests.test_unsupported_valid) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 1.436s
+
+OK

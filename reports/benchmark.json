@@ -1,0 +1,109 @@
+{
+  "scope": "synthetic vectors; exact masked top-k; warm process; NO embeddings inference, LLM inference, HTTP, model quality or concurrent load in these timings",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "cpu_count": 9,
+  "thread_env": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "native_available": true,
+  "kernel": [
+    {
+      "backend": "python",
+      "rows": 1000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 22.8704,
+      "p95_ms": 27.1782,
+      "trials": 30
+    },
+    {
+      "backend": "rust",
+      "rows": 1000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 0.3533,
+      "p95_ms": 0.4004,
+      "trials": 30
+    },
+    {
+      "backend": "numpy",
+      "rows": 1000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 0.3112,
+      "p95_ms": 0.3988,
+      "trials": 30
+    },
+    {
+      "backend": "python",
+      "rows": 10000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 241.0923,
+      "p95_ms": 282.6461,
+      "trials": 30
+    },
+    {
+      "backend": "rust",
+      "rows": 10000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 4.0028,
+      "p95_ms": 5.6201,
+      "trials": 30
+    },
+    {
+      "backend": "numpy",
+      "rows": 10000,
+      "dim": 384,
+      "k": 8,
+      "allowed_fraction": 0.75,
+      "p50_ms": 5.3298,
+      "p95_ms": 7.6963,
+      "trials": 30
+    }
+  ],
+  "pipeline": [
+    {
+      "backend": "python",
+      "path": "exact URI + explicit args (no LLM)",
+      "result_cache": false,
+      "p50_ms": 0.0494,
+      "p95_ms": 0.1286,
+      "trials": 100
+    },
+    {
+      "backend": "python",
+      "path": "exact URI + explicit args (no LLM)",
+      "result_cache": true,
+      "p50_ms": 0.0335,
+      "p95_ms": 0.0597,
+      "trials": 100
+    },
+    {
+      "backend": "rust",
+      "path": "exact URI + explicit args (no LLM)",
+      "result_cache": false,
+      "p50_ms": 0.0573,
+      "p95_ms": 0.1395,
+      "trials": 100
+    },
+    {
+      "backend": "rust",
+      "path": "exact URI + explicit args (no LLM)",
+      "result_cache": true,
+      "p50_ms": 0.0346,
+      "p95_ms": 0.1009,
+      "trials": 100
+    }
+  ],
+  "cpu": "AMD EPYC 9V74 80-Core Processor"
+}

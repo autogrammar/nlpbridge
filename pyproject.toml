@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nlbridge"
+version = "0.1.0"
+description = "Multilingual NL to validated operation plans: Python orchestration, Rust native kernels"
+requires-python = ">=3.11"
+dependencies = ["jsonschema>=4.23,<5"]
+license = "MIT"
+
+[project.optional-dependencies]
+numpy = ["numpy>=1.26,<3"]
+models = ["sentence-transformers[onnx]>=3,<6"]
+
+[project.scripts]
+nlbridge = "nlbridge.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["python"]
+

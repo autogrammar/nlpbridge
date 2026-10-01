@@ -1,0 +1,4 @@
+# nlbridge/dsl-v1
+s1 = call("proc://demo/text/word-count/v1", {"text":"Zażółć gęślą jaźń"});
+
+{'s1': {'count': 3}}

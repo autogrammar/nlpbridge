@@ -1,0 +1,9 @@
+{"language":"pl","text":"Konwertuj logo.svg do logo.png i zachowaj oryginał.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/svg-to-png/v1","args":{"source":"logo.svg","target":"logo.png","keep_source":true}}]}}
+{"language":"en","text":"Convert logo.svg to logo.png and keep the original.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/svg-to-png/v1","args":{"source":"logo.svg","target":"logo.png","keep_source":true}}]}}
+{"language":"de","text":"Konvertiere logo.svg in logo.png und behalte das Original.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/svg-to-png/v1","args":{"source":"logo.svg","target":"logo.png","keep_source":true}}]}}
+{"language":"fr","text":"Convertis logo.png en logo.svg et conserve le fichier original.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/png-to-svg/v1","args":{"source":"logo.png","target":"logo.svg","keep_source":true}}]}}
+{"language":"es","text":"Convierte logo.png a logo.svg y conserva el original.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/png-to-svg/v1","args":{"source":"logo.png","target":"logo.svg","keep_source":true}}]}}
+{"language":"pl","text":"Konwertuj logo.png do logo.svg. Nie usuwaj oryginału.","expected":{"status":"ready","steps":[{"uri":"proc://media/images/png-to-svg/v1","args":{"source":"logo.png","target":"logo.svg","keep_source":true}}]}}
+{"language":"pl","text":"Konwertuj logo.svg do PNG i zachowaj oryginał.","expected":{"status":"clarify"}}
+{"language":"en","text":"Book a flight from Paris to Warsaw.","expected":{"status":"unsupported"}}
+{"language":"pl","text":"Zmień tekst 'ala ma kota' na wielkie litery, a następnie policz słowa w wyniku.","expected":{"status":"ready","steps":[{"uri":"proc://demo/text/uppercase/v1","args":{"text":"ala ma kota"}},{"uri":"proc://demo/text/word-count/v1","args":{"text":{"$ref":{"step":"s1","pointer":"/text"}}}}]}}

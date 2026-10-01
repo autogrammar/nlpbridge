@@ -1,0 +1,8 @@
+target
+.venv
+state
+reports
+prebuilt
+**/__pycache__
+**/*.egg-info
+python/nlbridge/_native

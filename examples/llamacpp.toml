@@ -1,0 +1,20 @@
+[catalog]
+path = "catalog.json"
+database = "../state/llamacpp.sqlite"
+backend = "auto"
+
+[policy]
+allowed_effects = ["read", "write"]
+allowed_backends = ["python", "api"]
+max_steps = 8
+
+[model]
+provider = "openai"
+model = "local"
+base_url = "http://127.0.0.1:8081/v1"
+revision = "replace-with-your-gguf-sha256-and-server-version"
+max_tokens = 768
+temperature = 0.0
+
+[embedding]
+provider = "none"

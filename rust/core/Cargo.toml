@@ -1,0 +1,17 @@
+[package]
+name = "nlbridge-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "nlbridge_core"
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "nlbridge-core"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["arbitrary_precision"] }

@@ -1,0 +1,11 @@
+target/
+.venv*/
+__pycache__/
+*.egg-info/
+build/
+dist/
+.nlbridge/
+*.sqlite3*
+python/nlbridge/_native/*
+!python/nlbridge/_native/.gitkeep
+

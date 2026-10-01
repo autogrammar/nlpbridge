@@ -1,0 +1,30 @@
+[
+  {
+    "uri": "proc://demo/text/uppercase/v1",
+    "desc": "Convert the supplied text to uppercase, preserving its characters and whitespace except for case.",
+    "status": "declared", "effects": ["read"], "backend": "python",
+    "input_schema": {"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false},
+    "output_schema": {"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false}
+  },
+  {
+    "uri": "proc://demo/text/word-count/v1",
+    "desc": "Count whitespace-separated tokens in supplied text. This is a mechanical whitespace count, not linguistic word segmentation.",
+    "status": "declared", "effects": ["read"], "backend": "python",
+    "input_schema": {"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":false},
+    "output_schema": {"type":"object","properties":{"count":{"type":"integer","minimum":0}},"required":["count"],"additionalProperties":false}
+  },
+  {
+    "uri": "proc://media/images/svg-to-png/v1",
+    "desc": "Rasterize an SVG source into a PNG target file. Requires explicit source and target paths and whether to preserve the source. No vectorization.",
+    "status": "declared", "effects": ["read","write"], "backend": "api",
+    "input_schema": {"type":"object","properties":{"source":{"type":"string","pattern":"\\.svg$"},"target":{"type":"string","pattern":"\\.png$"},"keep_source":{"type":"boolean"}},"required":["source","target","keep_source"],"additionalProperties":false},
+    "output_schema": {"type":"object","properties":{"path":{"type":"string","pattern":"\\.png$"}},"required":["path"],"additionalProperties":false}
+  },
+  {
+    "uri": "proc://media/images/png-to-svg/v1",
+    "desc": "Vectorize a PNG source into an SVG target file. Requires explicit source and target paths and whether to preserve the source. This can approximate the raster image.",
+    "status": "declared", "effects": ["read","write"], "backend": "api",
+    "input_schema": {"type":"object","properties":{"source":{"type":"string","pattern":"\\.png$"},"target":{"type":"string","pattern":"\\.svg$"},"keep_source":{"type":"boolean"}},"required":["source","target","keep_source"],"additionalProperties":false},
+    "output_schema": {"type":"object","properties":{"path":{"type":"string","pattern":"\\.svg$"}},"required":["path"],"additionalProperties":false}
+  }
+]

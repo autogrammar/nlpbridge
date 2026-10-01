@@ -1,0 +1,28 @@
+[catalog]
+path = "catalog.json"
+database = "../state/ollama.sqlite"
+backend = "auto"
+
+[policy]
+allowed_effects = ["read", "write"]
+allowed_backends = ["python", "api"]
+max_steps = 8
+
+[runtime]
+top_k = 8
+cache_size = 128
+
+[model]
+provider = "ollama"
+model = "qwen3.5:2b"
+base_url = "http://127.0.0.1:11434"
+# Replace whenever weights/quantization/server behavior change.
+# This is a cache identity, not remote attestation of the weights.
+revision = "local-qwen3.5-2b-deployment-1"
+max_tokens = 768
+temperature = 0.0
+timeout = 45
+
+[embedding]
+# Small example catalog: send all allowed operations to the LLM.
+provider = "none"

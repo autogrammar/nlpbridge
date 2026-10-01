@@ -1,0 +1,20 @@
+# Runnable without downloading model weights. NL interpretation requires a model.
+[catalog]
+path = "catalog.json"
+database = "../state/catalog.sqlite"
+backend = "auto"
+
+[policy]
+allowed_effects = ["read", "write"]
+allowed_backends = ["python", "api"]
+max_steps = 8
+
+[runtime]
+top_k = 8
+cache_size = 128
+
+[model]
+provider = "none"
+
+[embedding]
+provider = "none"
