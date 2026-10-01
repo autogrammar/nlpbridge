@@ -1,4 +1,24 @@
-# NLBridge — Python + Rust
+# NLPBridge — wspólna interpretacja NL
+
+Repozytorium: https://github.com/autogrammar/nlpbridge. Nazwa dystrybucji to
+`nlpbridge`; istniejące API i CLI `nlbridge` pozostają kompatybilne.
+
+```python
+from nlpbridge import ChatModel, select_operation
+model = ChatModel("ollama", "YOUR_MODEL", "http://localhost:11434", "YOUR_REVISION")
+result = select_operation(user_text, eligible_operations, model)
+# Operacja: {uri, desc, input_schema, effects}; wynik ready lub clarify/unsupported.
+# Sam wynik nie upoważnia do wykonania operacji.
+```
+
+Adapter modelu implementuje `generate(messages, schema)`. To pozwala aplikacji
+zachować własny transport, uwierzytelnianie i wybór dostawcy. Wszystkie przekazane
+kontrakty trafiają do modelu; przekroczenie budżetu kończy się błędem, bez cichego
+obcięcia katalogu. Odpowiedź jest walidowana lokalnie, z najwyżej jedną próbą
+naprawy schematu. Błąd transportu lub brak modelu nie uruchamia heurystyk PL/EN.
+Testy protokołu nie dowodzą jakości semantycznej rzeczywistego modelu.
+
+## Istniejące API Python + Rust
 
 Uruchamialny szkielet NL → plan JSON → DSL lub jawnie podłączone API.
 Python odpowiada za integrację z aplikacją i modelami. Rust przyspiesza skanowanie

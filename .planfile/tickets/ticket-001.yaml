@@ -1,0 +1,5 @@
+schema: planfile.ticket/v1
+id: ticket-001
+title: Publish and adopt shared nlpbridge semantic interpretation
+status: in_progress
+owner: codex-nlpbridge

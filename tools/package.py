@@ -14,6 +14,8 @@ EXCLUDED = {
     "build",
     "dist",
     ".git",
+    ".worktrees",
+    ".subactor",
     "__pycache__",
     ".ruff_cache",
 }

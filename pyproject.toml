@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nlbridge"
+name = "nlpbridge"
 version = "0.1.0"
 description = "Multilingual NL to validated operation plans: Python orchestration, Rust native kernels"
 requires-python = ">=3.11"
@@ -14,7 +14,11 @@ license = "MIT"
 numpy = ["numpy>=1.26,<3"]
 models = ["sentence-transformers[onnx]>=3,<6"]
 
+[project.urls]
+Repository = "https://github.com/autogrammar/nlpbridge"
+
 [project.scripts]
+nlpbridge = "nlbridge.cli:main"
 nlbridge = "nlbridge.cli:main"
 
 [tool.setuptools.packages.find]
