@@ -1,0 +1,14 @@
+schema: planfile.ticket/v1
+id: ticket-002
+title: Publish NLPBridge 0.2 ONNX and catalog improvements
+status: in_progress
+owner: codex-nlpbridge-publication
+
+source_patch_sha256: 04fbed8cfdaf49b550c8baef428be1e3fca80cb104a55c6ef948863e686be051
+base_sha: 91529bd1ec16ab6e6e6dd723e82fa044538e7f4a
+branch: ticket/002-publish-v02
+acceptance:
+  - Preserve nlpbridge distribution, public API and both CLI aliases
+  - Pass Python native and fallback suites including ONNX
+  - Pass Rust core and ONNX workspace tests
+  - Exclude operational worktrees, leases and state from release archives

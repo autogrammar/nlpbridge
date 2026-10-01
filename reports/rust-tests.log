@@ -1,12 +1,12 @@
 
 running 7 tests
-test tests::directions_and_versions ... ok
-test tests::empty_index ... ok
-test tests::mask_before_top_k ... ok
-test tests::graph_order ... ok
 test tests::reject_invalid_shape ... ok
+test tests::empty_index ... ok
+test tests::directions_and_versions ... ok
+test tests::mask_before_top_k ... ok
 test tests::reject_nan_zero ... ok
 test tests::stable_ties ... ok
+test tests::graph_order ... ok
 
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
@@ -16,12 +16,25 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
+running 2 tests
+test tests::masked_pooling ... ok
+test tests::zero_and_nan_rejected ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-   Compiling nlbridge-core v0.1.0 (/workspace/scratch/9e56c401815b/nlbridge/rust/core)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s
-     Running unittests src/lib.rs (target/debug/deps/nlbridge_core-e9b69607038e9f34)
-     Running unittests src/main.rs (target/debug/deps/nlbridge_core-d98992dcf51dbb05)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (target/debug/deps/nlbridge_core-024aff067d796ba1)
+     Running unittests src/main.rs (target/debug/deps/nlbridge_core-8aad079362045a3d)
+     Running unittests src/lib.rs (target/debug/deps/nlbridge_onnx-f48cfb6d117168d4)
    Doc-tests nlbridge_core
+   Doc-tests nlbridge_onnx

@@ -1,5 +1,6 @@
 from __future__ import annotations
 import http.client
+import importlib.metadata
 import os
 import re
 import threading
@@ -177,6 +178,10 @@ class SentenceEmbedder:
         self.lock = threading.Lock()
         self.descriptor = {
             "provider": "sentence_transformers",
+            "libraries": {
+                p: importlib.metadata.version(p)
+                for p in ("sentence-transformers", "transformers", "tokenizers")
+            },
             "model": model,
             "revision": revision,
             "backend": backend,

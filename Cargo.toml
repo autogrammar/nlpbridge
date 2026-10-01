@@ -1,9 +1,9 @@
 [workspace]
-members = ["rust/core"]
+members = ["rust/core", "rust/onnx"]
+default-members = ["rust/core"]
 resolver = "2"
 
 [profile.release]
 opt-level = 3
 lto = "thin"
 codegen-units = 1
-

@@ -42,8 +42,23 @@ test_policy_context_and_revision_cache (test_bridge.RuntimeTests.test_policy_con
 test_query_and_depth_limits (test_bridge.RuntimeTests.test_query_and_depth_limits) ... ok
 test_two_phase_not_first_candidate (test_bridge.RuntimeTests.test_two_phase_not_first_candidate) ... ok
 test_unsupported_valid (test_bridge.RuntimeTests.test_unsupported_valid) ... ok
+test_artifact_names_are_bound_to_hashes (test_onnx.BundleTests.test_artifact_names_are_bound_to_hashes) ... ok
+test_external_weights_must_be_hashed (test_onnx.BundleTests.test_external_weights_must_be_hashed) ... ok
+test_identity_portable_and_preprocessing_sensitive (test_onnx.BundleTests.test_identity_portable_and_preprocessing_sensitive) ... ok
+test_output_dimension_failure (test_onnx.BundleTests.test_output_dimension_failure) ... ok
+test_path_escape_rejected (test_onnx.BundleTests.test_path_escape_rejected) ... ok
+test_python_token_budget_and_padding (test_onnx.BundleTests.test_python_token_budget_and_padding) ... ok
+test_rust_matches_python_int64_int32_and_threads (test_onnx.BundleTests.test_rust_matches_python_int64_int32_and_threads) ... ok
+test_tokenizer_tampering_detected (test_onnx.BundleTests.test_tokenizer_tampering_detected) ... ok
+test_legacy_and_corrupt_cache_rebuilt (test_v02.CacheHealthTests.test_legacy_and_corrupt_cache_rebuilt) ... ok
+test_portable_vector_bytes_and_invalid_blobs (test_v02.CacheHealthTests.test_portable_vector_bytes_and_invalid_blobs) ... ok
+test_readiness_http_does_not_depend_on_llm_configuration (test_v02.CacheHealthTests.test_readiness_http_does_not_depend_on_llm_configuration) ... ok
+test_reads_and_health_during_failed_reindex (test_v02.CacheHealthTests.test_reads_and_health_during_failed_reindex) ... ok
+test_constraints_preserved (test_v02.CompactTests.test_constraints_preserved) ... ok
+test_no_silent_description_truncation (test_v02.CompactTests.test_no_silent_description_truncation) ... ok
+test_smaller_selection_full_binding_and_metrics (test_v02.CompactTests.test_smaller_selection_full_binding_and_metrics) ... ok
 
 ----------------------------------------------------------------------
-Ran 44 tests in 1.436s
+Ran 59 tests in 2.207s
 
 OK

@@ -1,0 +1,1803 @@
+{
+  "utc": "2026-10-01T08:50:28.938364+00:00",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "threads": 2,
+  "scope": "Warm CPU embedding calls including tokenizer, pooling, normalization and Python/FFI transfer. No LLM, HTTP or full NL->DSL. Retrieval smoke is 20 hand-written queries against four operations, not a representative quality benchmark.",
+  "manifest": {
+    "dim": 384,
+    "files": {
+      "model.onnx": "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88",
+      "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+    },
+    "format": "nlbridge/embedding-bundle-v1",
+    "model": "model.onnx",
+    "preprocessing": {
+      "document_prefix": "passage: ",
+      "max_length": 512,
+      "normalize": true,
+      "output_name": "last_hidden_state",
+      "pad_id": 1,
+      "pooling": "mean",
+      "query_prefix": "query: "
+    },
+    "provenance": {
+      "onnx": "onnx/model_qint8_avx512_vnni.onnx",
+      "repo": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3"
+    },
+    "tokenizer": "tokenizer.json"
+  },
+  "backends": {
+    "python_onnx": {
+      "load_ms": 1096.218,
+      "descriptor": {
+        "bundle": {
+          "format": "nlbridge/embedding-bundle-v1",
+          "model_sha256": "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88",
+          "tokenizer_sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+          "artifacts": {
+            "model.onnx": "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88",
+            "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+          },
+          "dim": 384,
+          "preprocessing": {
+            "document_prefix": "passage: ",
+            "max_length": 512,
+            "normalize": true,
+            "output_name": "last_hidden_state",
+            "pad_id": 1,
+            "pooling": "mean",
+            "query_prefix": "query: "
+          }
+        },
+        "threads": 2,
+        "batch_size": 8,
+        "implementation": "nlbridge/onnx-v1",
+        "provider": "onnx",
+        "runtime_version": "1.24.4",
+        "runtime_sha256": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "tokenizer_version": "0.22.2",
+        "numpy_version": "2.3.5"
+      },
+      "info": {
+        "runtime": "1.24.4",
+        "threads": 2,
+        "dim": 384,
+        "inputs": [
+          {
+            "name": "input_ids",
+            "dtype": "tensor(int64)"
+          },
+          {
+            "name": "attention_mask",
+            "dtype": "tensor(int64)"
+          },
+          {
+            "name": "token_type_ids",
+            "dtype": "tensor(int64)"
+          }
+        ]
+      },
+      "samples": [
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 6.44638
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.68241
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 6.04226
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 6.31857
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 4.70683
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 5.8151
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 6.70325
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 7.11825
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 6.05119
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 5.98162
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 6.45392
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 7.01504
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 7.48014
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.14968
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 5.91232
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.7252
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 6.54911
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 6.92849
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 6.86686
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 6.87835
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 6.07569
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 6.1439
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 6.01979
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 5.83778
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 6.64581
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 6.60967
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 6.48791
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 6.27426
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 5.73217
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 7.24601
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 6.09912
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.43119
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 5.95049
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.23043
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 6.01421
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.25888
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 6.18907
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 5.60663
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 7.24089
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 7.39165
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 8.90128
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 7.73391
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 7.87592
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 10.57366
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 8.97878
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 7.85296
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 5.70709
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 4.83035
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 5.16444
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 4.99521
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.18835
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 5.57503
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 5.84477
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 4.49578
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 4.60845
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 5.27509
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 4.71965
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 4.35606
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 5.04736
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 5.88725
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.10382
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 4.6191
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 5.26694
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 4.60535
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 5.33393
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 4.33492
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 5.80685
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 4.60739
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 5.47728
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 5.07599
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 7.43172
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 6.53711
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 7.13133
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 5.71116
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 7.02904
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 6.3149
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 7.09076
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 6.49916
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 5.31818
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 5.50396
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 6.42672
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 7.32824
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 6.05299
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 5.81591
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 6.99581
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.1602
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 7.38983
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 7.08068
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 7.29956
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 7.08015
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 5.92137
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.22847
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 6.61782
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 5.41506
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 7.64907
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 5.68504
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 5.43582
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 5.74624
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 5.21505
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 4.93793
+        }
+      ],
+      "latency": {
+        "n": 100,
+        "p50_ms": 6.0643,
+        "p95_ms": 7.7399
+      },
+      "by_language": {
+        "pl": {
+          "n": 20,
+          "p50_ms": 6.2088,
+          "p95_ms": 7.6533,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "en": {
+          "n": 20,
+          "p50_ms": 5.9359,
+          "p95_ms": 6.7062,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "de": {
+          "n": 20,
+          "p50_ms": 6.1267,
+          "p95_ms": 7.5551,
+          "retrieval_smoke_recall1": 0.5,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "fr": {
+          "n": 20,
+          "p50_ms": 6.1201,
+          "p95_ms": 7.9272,
+          "retrieval_smoke_recall1": 0.5,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "es": {
+          "n": 20,
+          "p50_ms": 6.031,
+          "p95_ms": 7.4075,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        }
+      },
+      "retrieval_cases": [
+        {
+          "lang": "pl",
+          "query": "Zamień podany tekst na wielkie litery.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Policz słowa oddzielone spacjami w tekście.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Zamień logo.svg na logo.png i zachowaj oryginał.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Zamień logo.png na logo.svg i zachowaj oryginał.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert the supplied text to uppercase.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Count whitespace-separated words in the text.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert logo.svg to logo.png and keep the original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert logo.png to logo.svg and keep the original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Wandle den Text in Großbuchstaben um.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Zähle die durch Leerzeichen getrennten Wörter im Text.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Konvertiere logo.svg in logo.png und behalte das Original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Konvertiere logo.png in logo.svg und behalte das Original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis le texte en majuscules.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Compte les mots séparés par des espaces dans le texte.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis logo.svg en logo.png et conserve l’original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis logo.png en logo.svg et conserve l’original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte el texto a mayúsculas.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Cuenta las palabras separadas por espacios en el texto.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte logo.svg a logo.png y conserva el original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte logo.png a logo.svg y conserva el original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        }
+      ],
+      "first_index": {
+        "operations": 4,
+        "written": 4,
+        "deleted": 0,
+        "embedded": 4,
+        "cache_repaired": 0,
+        "vector_encoding": "f32le/1",
+        "revision": "34214ae068195a6e894311f2ac49eaa7564772ae3ca291adb2cda9a28246543c",
+        "embedding_id": "6253ce8655f65549e8c70657933c9a7c6882f70c83887a44e008143537771a16",
+        "backend": "rust"
+      },
+      "first_index_ms": 153.96,
+      "second_index": {
+        "operations": 4,
+        "written": 0,
+        "deleted": 0,
+        "embedded": 0,
+        "cache_repaired": 0,
+        "vector_encoding": "f32le/1",
+        "revision": "34214ae068195a6e894311f2ac49eaa7564772ae3ca291adb2cda9a28246543c",
+        "embedding_id": "6253ce8655f65549e8c70657933c9a7c6882f70c83887a44e008143537771a16",
+        "backend": "rust"
+      }
+    },
+    "rust_onnx": {
+      "load_ms": 1322.219,
+      "descriptor": {
+        "bundle": {
+          "format": "nlbridge/embedding-bundle-v1",
+          "model_sha256": "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88",
+          "tokenizer_sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+          "artifacts": {
+            "model.onnx": "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88",
+            "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+          },
+          "dim": 384,
+          "preprocessing": {
+            "document_prefix": "passage: ",
+            "max_length": 512,
+            "normalize": true,
+            "output_name": "last_hidden_state",
+            "pad_id": 1,
+            "pooling": "mean",
+            "query_prefix": "query: "
+          }
+        },
+        "threads": 2,
+        "batch_size": 8,
+        "implementation": "nlbridge/onnx-v1",
+        "provider": "rust_onnx",
+        "runtime_sha256": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "plugin_sha256": "ce6e7fbb0b211974b0c398d7181f67b7cb6d7388ab021a500a511c334cadf358",
+        "runtime_info": "ORT Build Info: git-branch=HEAD, git-commit-id=2d924974ef, build type=Release"
+      },
+      "info": {
+        "dim": 384,
+        "inputs": [
+          {
+            "dtype": "int64",
+            "name": "input_ids"
+          },
+          {
+            "dtype": "int64",
+            "name": "attention_mask"
+          },
+          {
+            "dtype": "int64",
+            "name": "token_type_ids"
+          }
+        ],
+        "runtime": "ORT Build Info: git-branch=HEAD, git-commit-id=2d924974ef, build type=Release",
+        "threads": 2
+      },
+      "samples": [
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 5.80106
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 7.21283
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 6.11372
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 5.14211
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 4.76616
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 6.05048
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 4.76858
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 6.81055
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 5.55383
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 6.5644
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.94459
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 7.32592
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 7.13312
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.23918
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 5.49266
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.81808
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 5.92186
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 7.07984
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 6.51763
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 7.08073
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 5.61488
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 5.934
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 5.61153
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 6.16383
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 6.6512
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 5.55621
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 4.89899
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 5.91506
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 5.22342
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 5.63456
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 5.99456
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 5.40136
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 5.38154
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.13007
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 5.66779
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.63453
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 6.7212
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.00996
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 6.68211
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 7.92107
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 9.24002
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 7.05712
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 8.38927
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 9.16005
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 7.55588
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 7.13467
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 9.03081
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 5.5037
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 4.56507
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 4.94368
+        },
+        {
+          "query_index": 16,
+          "lang": "es",
+          "ms": 4.57325
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 5.70872
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 5.18106
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 4.69642
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 4.47856
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 5.55695
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 4.9479
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 4.47325
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 4.09704
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 7.3189
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 5.13837
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 4.75776
+        },
+        {
+          "query_index": 1,
+          "lang": "pl",
+          "ms": 4.56389
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 4.5155
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 5.00588
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 4.8619
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 5.1369
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 4.46768
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 5.80846
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 5.41111
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 6.72445
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 6.60015
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 6.99238
+        },
+        {
+          "query_index": 8,
+          "lang": "de",
+          "ms": 5.94824
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.53557
+        },
+        {
+          "query_index": 5,
+          "lang": "en",
+          "ms": 6.24571
+        },
+        {
+          "query_index": 19,
+          "lang": "es",
+          "ms": 6.41587
+        },
+        {
+          "query_index": 7,
+          "lang": "en",
+          "ms": 6.8193
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 6.41568
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 6.7637
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 6.16036
+        },
+        {
+          "query_index": 0,
+          "lang": "pl",
+          "ms": 5.35915
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 5.61875
+        },
+        {
+          "query_index": 12,
+          "lang": "fr",
+          "ms": 6.02037
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 6.82723
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.3293
+        },
+        {
+          "query_index": 11,
+          "lang": "de",
+          "ms": 7.05689
+        },
+        {
+          "query_index": 3,
+          "lang": "pl",
+          "ms": 7.10147
+        },
+        {
+          "query_index": 14,
+          "lang": "fr",
+          "ms": 6.75131
+        },
+        {
+          "query_index": 15,
+          "lang": "fr",
+          "ms": 7.36616
+        },
+        {
+          "query_index": 4,
+          "lang": "en",
+          "ms": 5.63052
+        },
+        {
+          "query_index": 9,
+          "lang": "de",
+          "ms": 6.6179
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 6.56463
+        },
+        {
+          "query_index": 10,
+          "lang": "de",
+          "ms": 6.80452
+        },
+        {
+          "query_index": 2,
+          "lang": "pl",
+          "ms": 7.01135
+        },
+        {
+          "query_index": 17,
+          "lang": "es",
+          "ms": 4.80763
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 4.52491
+        },
+        {
+          "query_index": 18,
+          "lang": "es",
+          "ms": 5.36332
+        },
+        {
+          "query_index": 13,
+          "lang": "fr",
+          "ms": 4.98685
+        },
+        {
+          "query_index": 6,
+          "lang": "en",
+          "ms": 4.99002
+        }
+      ],
+      "latency": {
+        "n": 100,
+        "p50_ms": 5.9464,
+        "p95_ms": 7.5741
+      },
+      "by_language": {
+        "pl": {
+          "n": 20,
+          "p50_ms": 5.6716,
+          "p95_ms": 7.1123,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "en": {
+          "n": 20,
+          "p50_ms": 5.6246,
+          "p95_ms": 6.8351,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "de": {
+          "n": 20,
+          "p50_ms": 6.1998,
+          "p95_ms": 7.1543,
+          "retrieval_smoke_recall1": 0.5,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "fr": {
+          "n": 20,
+          "p50_ms": 6.0354,
+          "p95_ms": 9.0413,
+          "retrieval_smoke_recall1": 0.5,
+          "retrieval_smoke_recall2": 1.0
+        },
+        "es": {
+          "n": 20,
+          "p50_ms": 6.1219,
+          "p95_ms": 7.3102,
+          "retrieval_smoke_recall1": 0.75,
+          "retrieval_smoke_recall2": 1.0
+        }
+      },
+      "retrieval_cases": [
+        {
+          "lang": "pl",
+          "query": "Zamień podany tekst na wielkie litery.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Policz słowa oddzielone spacjami w tekście.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Zamień logo.svg na logo.png i zachowaj oryginał.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "pl",
+          "query": "Zamień logo.png na logo.svg i zachowaj oryginał.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert the supplied text to uppercase.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Count whitespace-separated words in the text.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert logo.svg to logo.png and keep the original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "en",
+          "query": "Convert logo.png to logo.svg and keep the original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Wandle den Text in Großbuchstaben um.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Zähle die durch Leerzeichen getrennten Wörter im Text.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Konvertiere logo.svg in logo.png und behalte das Original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "de",
+          "query": "Konvertiere logo.png in logo.svg und behalte das Original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis le texte en majuscules.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Compte les mots séparés par des espaces dans le texte.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis logo.svg en logo.png et conserve l’original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "fr",
+          "query": "Convertis logo.png en logo.svg et conserve l’original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte el texto a mayúsculas.",
+          "target": "proc://demo/text/uppercase/v1",
+          "ranking": [
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Cuenta las palabras separadas por espacios en el texto.",
+          "target": "proc://demo/text/word-count/v1",
+          "ranking": [
+            "proc://demo/text/word-count/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte logo.svg a logo.png y conserva el original.",
+          "target": "proc://media/images/svg-to-png/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": true,
+          "hit2": true
+        },
+        {
+          "lang": "es",
+          "query": "Convierte logo.png a logo.svg y conserva el original.",
+          "target": "proc://media/images/png-to-svg/v1",
+          "ranking": [
+            "proc://media/images/svg-to-png/v1",
+            "proc://media/images/png-to-svg/v1",
+            "proc://demo/text/uppercase/v1",
+            "proc://demo/text/word-count/v1"
+          ],
+          "hit1": false,
+          "hit2": true
+        }
+      ],
+      "first_index": {
+        "operations": 4,
+        "written": 4,
+        "deleted": 0,
+        "embedded": 4,
+        "cache_repaired": 0,
+        "vector_encoding": "f32le/1",
+        "revision": "34214ae068195a6e894311f2ac49eaa7564772ae3ca291adb2cda9a28246543c",
+        "embedding_id": "03187967a5179110af00c3ece7db65f1bd39257f510480a00dcf760acc849bee",
+        "backend": "rust"
+      },
+      "first_index_ms": 197.207,
+      "second_index": {
+        "operations": 4,
+        "written": 0,
+        "deleted": 0,
+        "embedded": 0,
+        "cache_repaired": 0,
+        "vector_encoding": "f32le/1",
+        "revision": "34214ae068195a6e894311f2ac49eaa7564772ae3ca291adb2cda9a28246543c",
+        "embedding_id": "03187967a5179110af00c3ece7db65f1bd39257f510480a00dcf760acc849bee",
+        "backend": "rust"
+      }
+    }
+  },
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "max_abs_query_difference": 6.878471375815209e-09,
+  "max_abs_document_difference": 4.857940660851767e-09,
+  "parity_passed": true,
+  "selection_cards": {
+    "full_bytes": 2119,
+    "compact_bytes": 1834,
+    "reduction_percent": 13.45,
+    "scope": "operation payload only; bytes are not model tokens"
+  },
+  "ranking_parity": true
+}

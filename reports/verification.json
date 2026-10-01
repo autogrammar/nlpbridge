@@ -1,35 +1,41 @@
 {
-  "utc": "2026-10-01T07:55:15.479354+00:00",
-  "scope": "real code execution; LLM and embedding provider tests use controlled fixtures; no downloaded models",
+  "utc": "2026-10-01T08:50:23.503229+00:00",
+  "scope": "Regression tests with scripted LLM and tiny generated ONNX graphs. Real downloaded-model measurements are separate in onnx-benchmark.json.",
   "checks": [
+    {
+      "name": "onnx-required",
+      "exit_code": 0,
+      "elapsed_s": 0.19,
+      "log": "onnx-required.log"
+    },
     {
       "name": "rust-tests",
       "exit_code": 0,
-      "elapsed_s": 0.572,
+      "elapsed_s": 0.126,
       "log": "rust-tests.log"
     },
     {
       "name": "python-native",
       "exit_code": 0,
-      "elapsed_s": 1.591,
+      "elapsed_s": 2.389,
       "log": "python-native.log"
     },
     {
       "name": "python-fallback",
       "exit_code": 0,
-      "elapsed_s": 1.56,
+      "elapsed_s": 2.416,
       "log": "python-fallback.log"
     },
     {
       "name": "example",
       "exit_code": 0,
-      "elapsed_s": 0.098,
+      "elapsed_s": 0.178,
       "log": "example.log"
     }
   ],
   "not_run": [
-    "real model inference or multilingual quality benchmark",
-    "local ONNX embedding model download/inference",
+    "real LLM inference or representative multilingual quality benchmark",
+    "full NL->DSL latency with real LLM",
     "Docker build/run",
     "remote GitHub Actions",
     "macOS or Windows build"

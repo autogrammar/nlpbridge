@@ -24,6 +24,14 @@ def open_runtime(config_path):
         embedder = None
     elif provider == "sentence_transformers":
         embedder = SentenceEmbedder(**embedding_config)
+    elif provider in {"onnx", "rust_onnx"}:
+        from .onnx_provider import ONNXEmbedder, RustONNXEmbedder
+
+        for key in ("bundle", "runtime_library", "native_path"):
+            if key in embedding_config:
+                embedding_config[key] = relative(embedding_config[key])
+        cls = ONNXEmbedder if provider == "onnx" else RustONNXEmbedder
+        embedder = cls(**embedding_config)
     else:
         embedder = HTTPEmbedder(provider=provider, **embedding_config)
     p = config.get("policy", {})

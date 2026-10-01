@@ -1,30 +1,19 @@
-# NLPBridge — wspólna interpretacja NL
+# NLPBridge 0.2.0 — Python + Rust
 
-Repozytorium: https://github.com/autogrammar/nlpbridge. Nazwa dystrybucji to
-`nlpbridge`; istniejące API i CLI `nlbridge` pozostają kompatybilne.
-
-```python
-from nlpbridge import ChatModel, select_operation
-model = ChatModel("ollama", "YOUR_MODEL", "http://localhost:11434", "YOUR_REVISION")
-result = select_operation(user_text, eligible_operations, model)
-# Operacja: {uri, desc, input_schema, effects}; wynik ready lub clarify/unsupported.
-# Sam wynik nie upoważnia do wykonania operacji.
-```
-
-Adapter modelu implementuje `generate(messages, schema)`. To pozwala aplikacji
-zachować własny transport, uwierzytelnianie i wybór dostawcy. Wszystkie przekazane
-kontrakty trafiają do modelu; przekroczenie budżetu kończy się błędem, bez cichego
-obcięcia katalogu. Odpowiedź jest walidowana lokalnie, z najwyżej jedną próbą
-naprawy schematu. Błąd transportu lub brak modelu nie uruchamia heurystyk PL/EN.
-Testy protokołu nie dowodzą jakości semantycznej rzeczywistego modelu.
-
-## Istniejące API Python + Rust
+Repozytorium: https://github.com/autogrammar/nlpbridge. Dystrybucja `nlpbridge`
+i API `from nlpbridge import select_operation` pozostają kompatybilne.
+Polecenia `nlpbridge` i `nlbridge` uruchamiają ten sam CLI.
 
 Uruchamialny szkielet NL → plan JSON → DSL lub jawnie podłączone API.
 Python odpowiada za integrację z aplikacją i modelami. Rust przyspiesza skanowanie
 indeksu wektorowego przez bezpośrednie FFI. Projekt nie zawiera słowników intencji
 PL/EN, reguł kolejności słów ani parsera języka naturalnego opartego na regexach.
 Interpretację języka wykonuje podłączony model.
+
+Wersja 0.2.0 dodaje krótsze karty wyboru operacji, cache `f32le/1`, kontrolę
+integralności lokalnych modeli oraz dwa backendy embeddingów ONNX. W pomiarze
+E5 oba adaptery osiągnęły medianę około 6 ms, bez wykazanej trwałej przewagi Rusta.
+Rust ONNX pozostaje opcjonalny. Dokładne wyniki i zakres pomiaru: `reports/REPORT.md`.
 
 ## Szybki start
 
@@ -85,8 +74,9 @@ Adapter wysyła JSON Schema przez Ollama `format` albo przez
 `response_format.json_schema` serwera zgodnego z OpenAI. Obsługiwany podzbiór
 schematu zależy od serwera. Błąd serwera nie powoduje przejścia na swobodny tekst.
 Walidacja po generowaniu jest zawsze wykonywana. Protokoły obu adapterów zostały
-sprawdzone z lokalnym serwerem testowym; w tej paczce nie ma wyników inferencji
-rzeczywistych modeli ani deklaracji jakości dla wszystkich języków europejskich.
+sprawdzone z lokalnym serwerem testowym. Paczka zawiera pomiary rzeczywistych
+embeddingów E5; nie zawiera pomiaru inferencji LLM ani deklaracji jakości dla
+wszystkich języków europejskich.
 
 Cztery przykładowe operacje mieszczą się w `top_k = 8`, dlatego konfiguracja
 startowa nie potrzebuje embeddingów. Wszystkie dozwolone kontrakty trafiają do
@@ -110,6 +100,69 @@ przy pierwszym ładowaniu. Długie opisy podlegają limitowi modelu embeddingowe
 utrzymuj kontrakty krótkie. Adaptery HTTP embeddingów obsługują także Ollama
 `api/embed` oraz zgodne endpointy `/v1/embeddings`; wymagają `model`, `revision`,
 `base_url` i `dim`. Prefiksy zapytania i dokumentu są konfigurowalne.
+
+## Lokalne ONNX: sprawdzona ścieżka w 0.2.0
+
+```bash
+python -m pip install -e '.[onnx]'
+python tools/prepare_e5.py
+nlbridge --config examples/onnx.toml index
+nlbridge --config examples/onnx.toml status
+# Opcjonalnie: natywna tokenizacja, inferencja i pooling przez C ABI.
+python tools/build_native.py --onnx
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python tools/benchmark_onnx.py --trials 100
+```
+
+Skrypt pobiera około 136 MB plików z przypiętego commitu
+`614241f622f53c4eeff9890bdc4f31cfecc418b3` repozytorium
+`intfloat/multilingual-e5-small`: wariant `model_qint8_avx512_vnni.onnx`, tokenizer
+i kartę modelu. To wariant zmierzony na CPU x86_64 tej sesji; sprawdź go na własnym
+sprzęcie. Wagi nie są w ZIP. Pobieranie następuje tylko po jawnym uruchomieniu skryptu.
+
+`examples/onnx.toml` domyślnie używa `provider = "onnx"`. Zmień na `"rust_onnx"`,
+aby korzystać z opcjonalnej biblioteki. Obie ścieżki używają tego samego pliku
+ONNX Runtime 1.24.4, ustawień wątków i bundla. Pythonowy adapter ONNX również
+wykonuje inferencję w kodzie natywnym. W przykładzie `[model]` pozostaje `none`;
+do NL → plan dodaj konfigurację LLM z `ollama.toml` lub `llamacpp.toml`.
+
+Bundle `manifest.json` wiąże SHA-256 grafu, tokenizera i wszystkich zewnętrznych
+plików wag z parametrami przetwarzania: prefiksami, paddingiem, limitem tokenów,
+poolingiem i normalizacją. Hashowanie i sprawdzenie grafu odbywają się przy
+ładowaniu. Deskryptor cache uwzględnia też bibliotekę runtime, implementację
+i ustawienia; przeniesienie całego bundla do innego katalogu nie zmienia jego
+tożsamości. Traktuj pliki załadowanego bundla jako niezmienne; po zmianie uruchom
+nowy embedder i `store.sync()`.
+
+Własny wyeksportowany model przygotujesz przez
+`nlbridge.model_bundle.create_bundle(directory, ...)`. Podaj jego rzeczywiste
+`dim`, `pad_id`, `max_length`, prefiksy, `output_name` i `pooling` (`mean`, `cls`
+lub `none`). Obsługiwane wejścia to rank-2 int32/int64 `input_ids`,
+`attention_mask` i opcjonalne `token_type_ids`; output to float32. To adapter
+dla tej rodziny grafów, nie dla dowolnego modelu ONNX. Dłuższe wejście daje błąd
+bez obcinania tekstu. Długie kontrakty skróć jawnie w `selection_description`
+lub użyj odpowiednio pojemnego modelu. Zwykły adapter Sentence Transformers
+zachowuje odrębne ustawienia truncation wybranego modelu.
+
+Natywna biblioteka jest ładowana z `python/nlbridge/_native`. Przy instalacji
+nieedytowalnej ustaw `embedding.native_path` na zbudowany plik. Opcjonalne
+`embedding.runtime_library` wskazuje własną zgodną bibliotekę ONNX Runtime
+(API 24); w przeciwnym razie używana jest biblioteka z pakietu `onnxruntime`.
+Proces może załadować tylko jedną wersję tej biblioteki. Nagłówek C ABI:
+`rust/onnx/include/nlbridge_onnx.h`. Bezpośredni klient C sam weryfikuje bundle
+przed otwarciem sesji. Domyślny build rdzenia nadal nie zawiera ONNX.
+
+## Krótszy wybór operacji
+
+`runtime.selection_view = "compact"` wysyła URI, opis, efekty i skrócone schematy.
+Zachowuje m.in. `const`, `enum`, `pattern`, pola wymagane i ograniczenia kierunku.
+Pełne schematy pozostają w fazie argumentów i walidacji. Opcjonalne pole kontraktu
+`selection_description` jest jawnym opisem autora; nie stosujemy automatycznego
+obcinania opisów. `selection_view = "full"` umożliwia porównanie obu wariantów.
+
+Na czterech przykładowych operacjach karty zmniejszyły payload wyboru z 2119 do
+1834 bajtów (13,45%). To rozmiar danych operacji, nie liczba tokenów ani przyspieszenie
+LLM. Wynik `compile()` raportuje `metrics.prompt_bytes` i
+`prompt_bytes_by_phase`; metryka obejmuje również ewentualną naprawę odpowiedzi.
 
 ## Podział odpowiedzialności
 
@@ -218,12 +271,20 @@ curl http://127.0.0.1:8080/v1/compile \
   --data '{"text":"Konwertuj logo.svg do logo.png i zachowaj oryginał."}'
 ```
 
-`GET /health` i `POST /v1/compile`; nie ma zdalnego endpointu uruchamiającego kod.
+`GET /health`, `GET /ready` i `POST /v1/compile`; nie ma zdalnego endpointu uruchamiającego kod.
 Serwer domyślnie słucha na localhost. Do wystawienia poza host użyj uwierzytelnionego
 reverse proxy. Polityka pochodzi z konfiguracji serwera; żądanie klienta nie może
 jej zmienić. Serwer ma ograniczoną liczbę workerów, limit 64 KiB body i zwraca 503
 przy pełnym zajęciu workerów. Połączenia do modeli są utrzymywane per worker;
 odpowiedzi aplikacyjnego HTTP zamykają połączenie po odpowiedzi.
+
+`/health` zwraca stan katalogu, generację indeksu, aktywne wektory, backend,
+tożsamość modelu, ostatni sukces/błąd i `syncing`. `/ready` zwraca 503, gdy brak
+opublikowanego indeksu albo jego embedder nie pasuje do konfiguracji. Gotowość
+dotyczy lokalnego katalogu i kompilacji jawnego URI; `model_configured` mówi o
+konfiguracji LLM. Endpoint nie odpytuje serwera modelu i nie potwierdza jego
+dostępności. Po błędzie przebudowy poprzedni snapshot nadal obsługuje zapytania,
+a diagnostyka pokazuje `degraded`.
 
 Query, context, opisy i output modelu są danymi niezaufanymi. Walidacja schematu
 ogranicza strukturę, ale nie usuwa ryzyka błędnej interpretacji/prompt injection
@@ -238,9 +299,12 @@ rewizję katalogu i wersję promptu. Przechowuje wyłącznie poprawne plany, nig
 wykonania. Cache jest w pamięci procesu, bounded LRU. Przy zmianie kontraktów wywołaj
 `store.sync(records, embedder)`; publikacja nowego snapshotu następuje po sukcesie.
 Stary plan zostanie odrzucony przez walidację aktualnego katalogu. Wagi modelu nie
-są pobierane ponownie na każde zapytanie. Cache wektorów SQLite jest lokalny dla
-maszyny i może rosnąć przy kolejnych wersjach modeli; stare wersje wymagają retencji
-ustalonej przez aplikację.
+są pobierane ponownie na każde zapytanie. Cache SQLite przechowuje wektory w jawnym
+formacie little-endian float32 `f32le/1`. Stare wpisy bez identyfikacji formatu
+oraz uszkodzone wektory są przeliczane. Nowy szablon kart również powoduje jednorazowe
+przeliczenie indeksu z 0.1.0. Transakcja i publikacja snapshotu następują po sukcesie;
+nieudana inferencja nie usuwa działającego indeksu. Cache może rosnąć przy kolejnych
+wersjach modeli; stare wersje wymagają retencji ustalonej przez aplikację.
 
 ## Testy i pomiary
 
@@ -250,13 +314,21 @@ python -m unittest discover -s tests -v
 NLBRIDGE_TEST_BACKEND=python python -m unittest discover -s tests -v
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python tools/benchmark.py --trials 30
 python tools/evaluate.py --config examples/ollama.toml --cases examples/eval.jsonl
+# Pełny zestaw po instalacji .[onnx] i zbudowaniu opcjonalnej biblioteki:
+python tools/verify.py --onnx
 ```
 
-`reports/benchmark.json` zawiera rzeczywiste pomiary tego środowiska: p50, p95,
-sprzęt, backend i liczbę prób. Porównuje implementacje w tej paczce, nie wszystkie
+`reports/benchmark.json` zachowuje rzeczywiste pomiary niezmienionego algorytmu top-k
+z wydania 0.1.0: p50, p95, sprzęt, backend i liczbę prób. Porównuje implementacje, nie wszystkie
 możliwe optymalizacje NumPy/Rusta. `reports/verification.json` i logi określają
 dokładnie, co uruchomiono. Zestaw testowy używa odpowiedzi kontrolowanych przy
 sprawdzaniu kontraktów/protokołów; nie mierzy jakości rozumienia NL.
+
+`reports/onnx-benchmark.json` obejmuje prawdziwe inferencje E5, porównanie wektorów
+i rankingów Python/Rust, 100 rozgrzanych próbek na backend oraz ponowne użycie cache.
+Mały test retrieval to 20 ręcznie napisanych zapytań PL/EN/DE/FR/ES na czterech
+operacjach. Nie jest reprezentatywnym pomiarem jakości. Zbliżone operacje o odwrotnym
+kierunku nadal wymagają rozstrzygnięcia przez plan i walidację.
 
 `tools/evaluate.py` wykonuje rzeczywiste wywołania skonfigurowanego LLM, wyłącza
 cache wyników i raportuje exact-plan accuracy oraz p50/p95 osobno dla języków.
@@ -296,6 +368,8 @@ NL jest składany przez Pythona; natywny rdzeń pozostaje niezależny od modelu.
 - [Sentence Transformers: ONNX](https://sbert.net/docs/sentence_transformer/usage/efficiency.html)
 - [multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small)
 - [Rust FFI](https://doc.rust-lang.org/nomicon/ffi.html)
+- [ort 2.0.0-rc.13](https://docs.rs/ort/2.0.0-rc.13/ort/)
+- [ONNX Runtime: threads](https://onnxruntime.ai/docs/performance/tune-performance/threading.html)
 - [Python ctypes](https://docs.python.org/3/library/ctypes.html)
 
 Licencja kodu projektu: MIT. Wagi modeli i zależności mają własne licencje.

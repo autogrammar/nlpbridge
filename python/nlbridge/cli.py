@@ -17,6 +17,7 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor")
     commands.add_parser("index")
+    commands.add_parser("status")
     compile_cmd = commands.add_parser("compile")
     compile_cmd.add_argument("text")
     compile_cmd.add_argument("--args")
@@ -40,6 +41,8 @@ def main(argv=None):
             runtime, stats = open_runtime(ns.config)
             if ns.command == "index":
                 result = stats
+            elif ns.command == "status":
+                result = runtime.health()
             elif ns.command == "compile":
                 result = runtime.compile(
                     ns.text,
