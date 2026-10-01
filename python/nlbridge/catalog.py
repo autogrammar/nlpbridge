@@ -1,6 +1,7 @@
 from __future__ import annotations
-from array import array
+from copy import deepcopy
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 import re
 import sqlite3
@@ -8,12 +9,12 @@ import threading
 from .common import BridgeError, canonical, fingerprint, strict_json
 from .contracts import operation
 from .native import VectorIndex
+from .cards import CARD_VERSION, retrieval_text
+from .vector_codec import ENCODING, encode_vector, decode_vector
 
 
 def index_text(op):
-    return canonical(
-        {k: op[k] for k in ("uri", "desc", "input_schema", "output_schema")}
-    )
+    return retrieval_text(op)
 
 
 def words(text):
@@ -84,109 +85,184 @@ class CatalogStore:
           CREATE TABLE IF NOT EXISTS vectors(model TEXT NOT NULL,doc_hash TEXT NOT NULL,dim INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(model,doc_hash));
         """)
         self.snapshot = None
+        columns = {r[1] for r in self.conn.execute("PRAGMA table_info(vectors)")}
+        if "encoding" not in columns:
+            self.conn.execute(
+                "ALTER TABLE vectors ADD COLUMN encoding TEXT NOT NULL DEFAULT 'legacy-native'"
+            )
+            self.conn.commit()
+        self.state_lock = threading.Lock()
+        self.sync_state = {
+            "syncing": False,
+            "generation": 0,
+            "last_success": None,
+            "last_error": None,
+            "last_stats": None,
+        }
 
     def close(self):
         self.conn.close()
 
     def sync(self, records, embedder=None):
         with self.lock:
-            ops = sorted((operation(r) for r in records), key=lambda x: x["uri"])
-            if len({o["uri"] for o in ops}) != len(ops):
-                raise BridgeError("duplicate operation URI")
-            if len(ops) > 100000:
-                raise BridgeError("catalog exceeds 100,000 operations")
-            descriptor = embedder.descriptor if embedder else {"provider": "none"}
-            model_id = fingerprint(descriptor)
-            old = {
-                u: (r, h)
-                for u, r, h in self.conn.execute(
-                    "SELECT uri,record,doc_hash FROM operations"
+            with self.state_lock:
+                self.sync_state = {**self.sync_state, "syncing": True}
+            try:
+                result = self._sync(records, embedder)
+                with self.state_lock:
+                    self.sync_state = {
+                        "syncing": False,
+                        "generation": self.sync_state["generation"] + 1,
+                        "last_success": datetime.now(timezone.utc).isoformat(),
+                        "last_error": None,
+                        "last_stats": deepcopy(result),
+                    }
+                return result
+            except Exception as error:
+                with self.state_lock:
+                    self.sync_state = {
+                        **self.sync_state,
+                        "syncing": False,
+                        "last_error": {
+                            "code": type(error).__name__,
+                            "message": "sync failed; the previous published snapshot was retained",
+                        },
+                    }
+                raise
+
+    def health(self):
+        with self.state_lock:
+            state = deepcopy(self.sync_state)
+            snapshot = self.snapshot
+        ready = snapshot is not None
+        return {
+            **state,
+            "ready": ready,
+            "status": "syncing"
+            if state["syncing"]
+            else "degraded"
+            if state["last_error"]
+            else "ready"
+            if ready
+            else "not_ready",
+            "catalog_revision": snapshot.revision if ready else None,
+            "embedding_id": snapshot.embedding_id if ready else None,
+            "operations": len(snapshot.operations) if ready else 0,
+            "active_vectors": snapshot.index.rows if ready and snapshot.index else 0,
+            "vector_encoding": ENCODING,
+            "index_backend": snapshot.index.backend
+            if ready and snapshot.index
+            else "none",
+        }
+
+    def _sync(self, records, embedder=None):
+        # The caller serializes writers; readers retain an immutable snapshot.
+        ops = sorted((operation(r) for r in records), key=lambda x: x["uri"])
+        if len({o["uri"] for o in ops}) != len(ops):
+            raise BridgeError("duplicate operation URI")
+        if len(ops) > 100000:
+            raise BridgeError("catalog exceeds 100,000 operations")
+        descriptor = embedder.descriptor if embedder else {"provider": "none"}
+        model_id = fingerprint(descriptor)
+        old = {
+            u: (r, h)
+            for u, r, h in self.conn.execute(
+                "SELECT uri,record,doc_hash FROM operations"
+            )
+        }
+        encoded = {o["uri"]: canonical(o) for o in ops}
+        docs = {o["uri"]: index_text(o) for o in ops}
+        hashes = {
+            u: fingerprint({"template": CARD_VERSION, "text": t})
+            for u, t in docs.items()
+        }
+        blobs = {}
+        pending = {}
+        repaired = 0
+        dim = embedder.dim if embedder else 0
+        if embedder:
+            for h in set(hashes.values()):
+                row = self.conn.execute(
+                    "SELECT dim,data,encoding FROM vectors WHERE model=? AND doc_hash=?",
+                    (model_id, h),
+                ).fetchone()
+                if row and row[0] == dim and row[2] == ENCODING:
+                    try:
+                        blobs[h] = decode_vector(row[1], dim)
+                    except BridgeError:
+                        repaired += 1
+                elif row:
+                    repaired += 1
+            missing = sorted(set(hashes.values()) - set(blobs))
+            text_by_hash = {hashes[u]: t for u, t in docs.items()}
+            if missing:
+                vectors = embedder.embed_documents([text_by_hash[h] for h in missing])
+                if len(vectors) != len(missing):
+                    raise BridgeError("embedding count mismatch")
+                for h, v in zip(missing, vectors):
+                    if len(v) != dim:
+                        raise BridgeError("embedding dimension changed")
+                    pending[h] = encode_vector(v)
+                    blobs[h] = decode_vector(pending[h], dim)
+        # Build/validate before opening a write transaction; failure leaves prior state intact.
+        index = (
+            VectorIndex([blobs[hashes[o["uri"]]] for o in ops], dim, self.backend)
+            if embedder
+            else None
+        )
+        revision = fingerprint({"format": "nlbridge/catalog-v1", "operations": ops})
+        new_snapshot = Snapshot(
+            revision,
+            tuple(ops),
+            {o["uri"]: o for o in ops},
+            index,
+            tuple(words(index_text(o)) for o in ops),
+            model_id,
+        )
+        written = 0
+        removed = set(old) - set(encoded)
+        with self.conn:
+            for h, data in pending.items():
+                self.conn.execute(
+                    "INSERT INTO vectors(model,doc_hash,dim,data,encoding) VALUES(?,?,?,?,?) ON CONFLICT(model,doc_hash) DO UPDATE SET dim=excluded.dim,data=excluded.data,encoding=excluded.encoding",
+                    (model_id, h, dim, data, ENCODING),
                 )
-            }
-            encoded = {o["uri"]: canonical(o) for o in ops}
-            docs = {o["uri"]: index_text(o) for o in ops}
-            hashes = {
-                u: fingerprint({"template": "nlbridge/index-v1", "text": t})
-                for u, t in docs.items()
-            }
-            blobs = {}
-            pending = {}
-            dim = embedder.dim if embedder else 0
-            if embedder:
-                for h in set(hashes.values()):
-                    row = self.conn.execute(
-                        "SELECT dim,data FROM vectors WHERE model=? AND doc_hash=?",
-                        (model_id, h),
-                    ).fetchone()
-                    if row and row[0] == dim:
-                        v = array("f")
-                        v.frombytes(row[1])
-                        blobs[h] = v
-                missing = sorted(set(hashes.values()) - set(blobs))
-                text_by_hash = {hashes[u]: t for u, t in docs.items()}
-                if missing:
-                    vectors = embedder.embed_documents(
-                        [text_by_hash[h] for h in missing]
-                    )
-                    if len(vectors) != len(missing):
-                        raise BridgeError("embedding count mismatch")
-                    for h, v in zip(missing, vectors):
-                        if len(v) != dim:
-                            raise BridgeError("embedding dimension changed")
-                        a = array("f", v)
-                        blobs[h] = a
-                        pending[h] = a.tobytes()
-            # Build/validate before opening a write transaction; failure leaves prior state intact.
-            index = (
-                VectorIndex([blobs[hashes[o["uri"]]] for o in ops], dim, self.backend)
-                if embedder
-                else None
-            )
-            revision = fingerprint({"format": "nlbridge/catalog-v1", "operations": ops})
-            new_snapshot = Snapshot(
-                revision,
-                tuple(ops),
-                {o["uri"]: o for o in ops},
-                index,
-                tuple(words(index_text(o)) for o in ops),
-                model_id,
-            )
-            written = 0
-            removed = set(old) - set(encoded)
-            with self.conn:
-                for h, data in pending.items():
+            # Old cache blobs have no reliable byte-order identity. Rebuild,
+            # then retire them only inside this successful transaction.
+            self.conn.execute("DELETE FROM vectors WHERE encoding='legacy-native'")
+            for u in removed:
+                self.conn.execute("DELETE FROM operations WHERE uri=?", (u,))
+            for u, raw in encoded.items():
+                if old.get(u) != (raw, hashes[u]):
                     self.conn.execute(
-                        "INSERT INTO vectors VALUES(?,?,?,?) ON CONFLICT(model,doc_hash) DO UPDATE SET dim=excluded.dim,data=excluded.data",
-                        (model_id, h, dim, data),
+                        "INSERT INTO operations VALUES(?,?,?) ON CONFLICT(uri) DO UPDATE SET record=excluded.record,doc_hash=excluded.doc_hash",
+                        (u, raw, hashes[u]),
                     )
-                for u in removed:
-                    self.conn.execute("DELETE FROM operations WHERE uri=?", (u,))
-                for u, raw in encoded.items():
-                    if old.get(u) != (raw, hashes[u]):
-                        self.conn.execute(
-                            "INSERT INTO operations VALUES(?,?,?) ON CONFLICT(uri) DO UPDATE SET record=excluded.record,doc_hash=excluded.doc_hash",
-                            (u, raw, hashes[u]),
-                        )
-                        written += 1
-                for key, value in {
-                    "revision": revision,
-                    "embedding_id": model_id,
-                    "embedding_descriptor": canonical(descriptor),
-                }.items():
-                    self.conn.execute(
-                        "INSERT INTO meta VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value WHERE meta.value<>excluded.value",
-                        (key, value),
-                    )
-            self.snapshot = new_snapshot
-            return {
-                "operations": len(ops),
-                "written": written,
-                "deleted": len(removed),
-                "embedded": len(pending),
+                    written += 1
+            for key, value in {
                 "revision": revision,
                 "embedding_id": model_id,
-                "backend": index.backend if index else "none",
-            }
+                "embedding_descriptor": canonical(descriptor),
+                "vector_encoding": ENCODING,
+                "index_template": CARD_VERSION,
+            }.items():
+                self.conn.execute(
+                    "INSERT INTO meta VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value WHERE meta.value<>excluded.value",
+                    (key, value),
+                )
+        with self.state_lock:
+            self.snapshot = new_snapshot
+        return {
+            "operations": len(ops),
+            "written": written,
+            "deleted": len(removed),
+            "embedded": len(pending),
+            "cache_repaired": repaired,
+            "vector_encoding": ENCODING,
+            "revision": revision,
+            "embedding_id": model_id,
+            "backend": index.backend if index else "none",
+        }
 
 
 def load_catalog(path):

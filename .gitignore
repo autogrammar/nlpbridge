@@ -1,4 +1,6 @@
 target/
+models/
+state/
 .venv*/
 __pycache__/
 *.egg-info/
@@ -9,5 +11,8 @@ dist/
 python/nlbridge/_native/*
 !python/nlbridge/_native/.gitkeep
 
-
+.idea
 /.worktrees/
+
+/.subactor/leases/
+/.subactor/receipts/

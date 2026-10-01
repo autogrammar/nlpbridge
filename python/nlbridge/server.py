@@ -65,11 +65,11 @@ def make_server(runtime, host="127.0.0.1", port=8080, workers=4):
             self.close_connection = True
 
         def do_GET(self):
-            if self.path != "/health":
+            if self.path not in {"/health", "/ready"}:
                 return self.respond(404, {"error": "not_found"})
+            state = runtime.health()
             self.respond(
-                200,
-                {"status": "ok", "catalog_revision": runtime.store.snapshot.revision},
+                503 if self.path == "/ready" and not state["ready"] else 200, state
             )
 
         def do_POST(self):

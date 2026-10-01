@@ -8,6 +8,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {
+    "models",
     "target",
     "state",
     ".venv",
@@ -16,6 +17,7 @@ EXCLUDED = {
     ".git",
     ".worktrees",
     ".subactor",
+    ".idea",
     "__pycache__",
     ".ruff_cache",
 }
@@ -23,7 +25,7 @@ EXCLUDED = {
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="../artifacts/nlbridge-0.1.0.zip")
+    parser.add_argument("--output", default="../artifacts/nlbridge-0.2.0.zip")
     args = parser.parse_args()
     output = Path(args.output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)

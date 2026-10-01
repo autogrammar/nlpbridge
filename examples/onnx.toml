@@ -1,0 +1,23 @@
+# After running tools/prepare_e5.py. Rust embeddings additionally need --onnx build.
+# Embedding/retrieval demo. Configure [model] as in ollama.toml for NL -> plan.
+[catalog]
+path = "catalog.json"
+database = "../state/onnx.sqlite"
+backend = "auto"
+
+[embedding]
+provider = "onnx" # optional "rust_onnx"; benchmark both on your hardware
+bundle = "../models/multilingual-e5-small/manifest.json"
+threads = 2
+batch_size = 8
+
+[model]
+provider = "none"
+
+[policy]
+allowed_effects = ["read", "write"]
+max_steps = 8
+
+[runtime]
+selection_view = "compact"
+top_k = 8

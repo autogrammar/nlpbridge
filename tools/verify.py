@@ -17,17 +17,22 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--cargo", default=os.environ.get("NLBRIDGE_CARGO", "cargo"))
+    p.add_argument(
+        "--onnx",
+        action="store_true",
+        help="require optional ONNX dependencies/plugin and test both Rust crates",
+    )
     ns = p.parse_args()
     env = os.environ.copy()
     if os.path.isabs(ns.cargo):
         env["PATH"] = str(Path(ns.cargo).parent) + os.pathsep + env.get("PATH", "")
     report = {
         "utc": datetime.now(timezone.utc).isoformat(),
-        "scope": "real code execution; LLM and embedding provider tests use controlled fixtures; no downloaded models",
+        "scope": "Regression tests with scripted LLM and tiny generated ONNX graphs. Real downloaded-model measurements are separate in onnx-benchmark.json.",
         "checks": [],
         "not_run": [
-            "real model inference or multilingual quality benchmark",
-            "local ONNX embedding model download/inference",
+            "real LLM inference or representative multilingual quality benchmark",
+            "full NL->DSL latency with real LLM",
             "Docker build/run",
             "remote GitHub Actions",
             "macOS or Windows build",
@@ -38,7 +43,11 @@ def main():
         },
     }
     checks = [
-        ("rust-tests", [ns.cargo, "test", "--locked"], {}),
+        (
+            "rust-tests",
+            [ns.cargo, "test", "--locked"] + (["--workspace"] if ns.onnx else []),
+            {},
+        ),
         (
             "python-native",
             [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
@@ -54,6 +63,19 @@ def main():
         ),
         ("example", [sys.executable, "examples/in_process.py"], {}),
     ]
+    if ns.onnx:
+        checks.insert(
+            0,
+            (
+                "onnx-required",
+                [
+                    sys.executable,
+                    "-c",
+                    "import onnx, onnxruntime, tokenizers, numpy; from nlbridge.onnx_provider import native_library; print(native_library())",
+                ],
+                {},
+            ),
+        )
     out = ROOT / "reports"
     out.mkdir(exist_ok=True)
     for name, cmd, overrides in checks:

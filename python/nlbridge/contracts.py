@@ -89,6 +89,13 @@ def operation(raw):
     if not isinstance(digest, str) or not HASH.fullmatch(digest):
         raise BridgeError("digest must be lowercase SHA-256")
     result["digest"] = digest
+    if "selection_description" in raw:
+        brief = raw["selection_description"]
+        if not isinstance(brief, str) or not brief.strip() or len(brief) > 2048:
+            raise BridgeError(
+                "selection_description must be a nonempty string up to 2048 characters"
+            )
+        result["selection_description"] = brief
     return result
 
 

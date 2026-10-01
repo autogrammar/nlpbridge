@@ -1,43 +1,74 @@
-# NLBridge 0.1.0 — wyniki weryfikacji
+# NLBridge 0.2.0 — wdrożenie i weryfikacja
 
-Pomiar i testy: 2026-10-01T07:55:15.479354+00:00. Platforma: Linux-6.18.44-x86_64-with-glibc2.39; CPU: AMD EPYC 9V74 80-Core Processor; Python 3.12.14. Rust 1.98.1.
+Wydanie rozszerza istniejący projekt Python + Rust. Zastosowano pomysły z przeglądu: krótkie karty operacji, identyfikację lokalnych modeli na podstawie plików, przenośny cache i diagnostykę. Dodano działający, opcjonalny moduł ONNX w Ruście oraz porównywalny adapter Python ONNX.
+
+## Co zmieniono
+
+- Karty wyboru operacji zachowują ograniczenia kontraktów; argumenty i dataflow nadal sprawdza pełny walidator. Pełny opis można zastąpić jawnym `selection_description`; tekst nie jest automatycznie obcinany.
+- Lokalny bundle sprawdza SHA-256 grafu, tokenizera i zewnętrznych wag. Tożsamość obejmuje powiązania nazw plików z hashami, preprocessing i runtime. Przeniesienie katalogu nie zmienia tożsamości.
+- Wektory mają format `f32le/1`. Migracja i odbudowa uszkodzonych wpisów zachowują dotychczasowy snapshot do sukcesu aktualizacji.
+- `/health`, `/ready` i komenda `status` pokazują stan katalogu i indeksowania. Readiness nie jest testem dostępności zdalnego LLM.
+- `rust/onnx` jest osobnym, opcjonalnym modułem C ABI. Rdzeń wyszukiwania nie ma zależności ONNX. Oba adaptery obsługują int32/int64, mean/CLS/gotowe wektory, maskowanie paddingu i normalizację. Przekroczenie limitu tokenów powoduje błąd.
+- Metryki zawierają liczbę bajtów promptu per faza. Na przykładzie czterech operacji payload kart zmniejszył się z 2119 do 1834 bajtów (13,45%). Nie jest to pomiar liczby tokenów ani czasu LLM.
 
 ## Testy
 
-44 testy Pythona zaliczone w trybie natywnym oraz ponownie z wyłączoną biblioteką natywną. 7 testów Rusta zaliczonych. Przykład wykonania lokalnej funkcji również przeszedł. Szczegóły i kody wyjścia: `verification.json`; pełne logi obok.
+Weryfikacja: 2026-10-01T08:50:23.503229+00:00. **59 testów Pythona zaliczonych** w konfiguracji rdzenia Rust, następnie tych samych 59 z rdzeniem Python. **9 testów Rusta zaliczonych**: 7 rdzenia i 2 modułu ONNX. Przykład lokalnego wykonania również przeszedł. Wszystkie kontrole `tools/verify.py --onnx` zakończyły się kodem 0.
 
-Sprawdzone: zgodność top-k i wyników liczbowych Python/Rust/NumPy, filtrowanie przed rankingiem, kierunek określony kontraktem, typy referencji, odrzucenie cykli i odwołań do przyszłości, błędne wyjścia funkcji, polityka/cache, zmiana modelu embeddingowego, usuwanie rekordów, rollback nieudanej aktualizacji, HTTP i CLI. Kontrolowane odpowiedzi modelu testują mechanikę planowania i naprawy, nie rozumienie języka.
+Testy ONNX używają małych, generowanych grafów. Obejmują zgodność obu adapterów, int32/int64, padding, wywołania współbieżne, limity wejścia, błędny wymiar wyjścia, podmieniony tokenizer, brak hashy zewnętrznych wag i wyjście ścieżki poza bundle. Osobno sprawdzono naprawę cache oraz czytanie starego indeksu podczas nieudanej przebudowy. Testy LLM używają odpowiedzi kontrolowanych i nie mierzą rozumienia języka.
 
-## Dokładne wyszukiwanie wektorowe
+Pełne logi: `python-native.log`, `python-fallback.log`, `rust-tests.log`. Zbiorczy wynik: `verification.json`. Opcjonalne testy ONNX były uruchomione, nie pominięte. Tryb fallback wyłącza natywny rdzeń wyszukiwania; testy opcjonalnego adaptera ONNX nadal porównują oba jego backendy.
 
-Wektory syntetyczne, 384 wymiary, top-8, 75% rekordów dopuszczonych maską, 30 prób po rozgrzaniu. Jeden wątek BLAS/OMP. Macierz już załadowana. Wynik obejmuje wywołanie z Pythona i transfer zapytania/maski przez FFI. Nie zawiera inferencji embeddingów, RRF, LLM ani komunikacji HTTP.
+## Rzeczywisty model i opóźnienia
 
-| Rekordy | Backend | p50 [ms] | p95 [ms] |
-|---:|---|---:|---:|
-| 1000 | python | 22.8704 | 27.1782 |
-| 1000 | rust | 0.3533 | 0.4004 |
-| 1000 | numpy | 0.3112 | 0.3988 |
-| 10000 | python | 241.0923 | 282.6461 |
-| 10000 | rust | 4.0028 | 5.6201 |
-| 10000 | numpy | 5.3298 | 7.6963 |
+Pomiar: 2026-10-01T08:50:28.938364+00:00. CPU: AMD EPYC 9V74 80-Core Processor; platforma: Linux-6.18.44-x86_64-with-glibc2.39; Python 3.12.14. Oba adaptery: ONNX Runtime 1.24.4, tokenizers 0.22.2, CPU, 2 wątki intra-op, 1 inter-op, bez spinowania. BLAS/OMP: 1 wątek.
 
-Przy 10 000 rekordów Rust uzyskał w tym pomiarze około 60× krótszą medianę niż pętle Pythona. Przy 1 000 rekordów NumPy miał nieco niższą medianę niż Rust. Są to porównania konkretnych implementacji w tej paczce, bez gwarancji dla innego sprzętu, obciążenia lub alternatywnie zoptymalizowanej biblioteki. p95 z 30 prób jest orientacyjny.
+Model: `intfloat/multilingual-e5-small`, commit `614241f622f53c4eeff9890bdc4f31cfecc418b3`, plik `onnx/model_qint8_avx512_vnni.onnx`, 384 wymiary. Prefiksy `query: ` / `passage: `, mean pooling z maską, L2, limit 512 tokenów, pad ID 1. W raporcie JSON znajdują się hashe modelu, tokenizera, runtime i dołączonego modułu Rust.
 
-## Kompilacja jawnego URI z argumentami
+100 rozgrzanych wywołań na backend; 20 krótkich zapytań PL/EN/DE/FR/ES, każdy powtórzony 5 razy. Kolejność losowana ze stałym seedem, backendy przeplatane. Czas obejmuje tokenizację, inferencję, pooling, normalizację i powrót listy wektorów do Pythona przez API lub FFI. Nie obejmuje LLM, HTTP, inicjalizacji ani całego NL → DSL.
 
-Krótki plan, działający proces, brak inferencji LLM i embeddingów, 100 prób. Wiersz Rust wymusza także natywną serializację; domyślne auto używa Pythona do serializacji małego DSL.
+| Adapter | p50 [ms] | p95 [ms] |
+|---|---:|---:|
+| Python ONNX | 6.0643 | 7.7399 |
+| Rust ONNX | 5.9464 | 7.5741 |
 
-| Backend kompilacji | Cache wyniku | p50 [ms] | p95 [ms] |
-|---|---|---:|---:|
-| python | nie | 0.0494 | 0.1286 |
-| python | tak | 0.0335 | 0.0597 |
-| rust | nie | 0.0573 | 0.1395 |
-| rust | tak | 0.0346 | 0.1009 |
+Oba wyniki są bliskie 6 ms. W pomiarze wstępnym przewaga była po stronie Pythona, w końcowym po stronie Rusta. Te próby nie wykazują trwałej przewagi jednego adaptera; nie uzasadniają obietnicy przyspieszenia całego potoku. Python ONNX pozostaje domyślnym przykładem, Rust ONNX opcją integracyjną. Python również korzysta z natywnej inferencji ONNX Runtime.
 
-## Zakres pozostawiony do sprawdzenia we wdrożeniu
+Maksymalna różnica współrzędnych Python/Rust: 6.88e-09 dla zapytań, 4.86e-09 dla dokumentów; próg zgodności 1e-5. Wszystkie 20 rankingów było identycznych. Drugie indeksowanie w obu backendach wykonało **0 embeddingów** i **0 zapisów rekordów**.
 
-Nie uruchamiano prawdziwego LLM ani lokalnego modelu ONNX. Nie zmierzono jakości wielojęzycznej, end-to-end p95 NL → DSL, recall@k embeddingów ani obciążenia współbieżnego. Skrypt `tools/evaluate.py` służy do pomiarów z rzeczywistym modelem i własnym zestawem przypadków. Wagi modeli nie są częścią paczki.
+Ładowanie wraz z weryfikacją plików: Python 1096.2 ms, Rust 1322.2 ms. To pojedyncze pomiary, z rozgrzanym cache systemu plików; nie są benchmarkiem zimnego startu.
 
-Docker, zdalny GitHub Actions oraz kompilacja macOS/Windows nie były uruchamiane w tym środowisku. Dołączone binaria są dla Linux x86_64; do innych systemów są źródła i skrypt budowania.
+## Mały test retrieval
 
-Instrukcja i ograniczenia semantyki planu: `../README.md`. Maszynowy wynik benchmarku: `benchmark.json`.
+Po cztery ręcznie napisane zapytania na język, cztery operacje w katalogu. W tabeli dense retrieval, bez RRF i LLM. To test działania modelu i zgodności adapterów, nie miarodajny benchmark wielojęzycznej jakości.
+
+| Język | recall@1 | recall@2 |
+|---|---:|---:|
+| PL | 75% | 100% |
+| EN | 75% | 100% |
+| DE | 50% | 100% |
+| FR | 50% | 100% |
+| ES | 75% | 100% |
+
+Wysokie recall@2 na czterech operacjach nie oznacza poprawnego wyboru kierunku konwersji. Wyniki wzmacniają potrzebę dwufazowego LLM i semantycznej walidacji argumentów. Surowe zapytania, rankingi, próbki czasowe i wyniki per język: `onnx-benchmark.json`.
+
+## Migracja i uruchomienie
+
+Kod konfiguracji i IR pozostają zgodne z 0.1.0. Pierwsze `store.sync()` przeliczy embeddingi ze względu na nowy szablon kart i oznaczenie formatu. `selection_view="full"` pozwala porównać dotychczasowy widok wyboru. Wagi pobiera osobny skrypt, nie import pakietu.
+
+```bash
+python -m pip install -e '.[onnx]'
+python tools/prepare_e5.py
+python tools/build_native.py --onnx
+nlbridge --config examples/onnx.toml status
+python tools/verify.py --onnx
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python tools/benchmark_onnx.py --trials 100
+```
+
+Konfiguracja ONNX ma `[model] provider="none"`. Do interpretacji NL trzeba dodać endpoint LLM z przykładów Ollama/llama.cpp. Istniejąca ścieżka jawnego URI działa bez LLM. Przykłady konwersji obrazów nadal wymagają podłączenia własnych funkcji/API.
+
+## Zakres dalszych pomiarów
+
+Nie uruchamiano rzeczywistego LLM ani pomiaru end-to-end NL → DSL. Nie zmierzono p95 pod obciążeniem, reprezentatywnej jakości językowej ani Q4/Q5 planowania. `tools/evaluate.py` pozostaje narzędziem do oceny własnego LLM i zestawu przypadków. Docker, GitHub Actions, macOS i Windows nie zostały uruchomione. Dołączone biblioteki są dla Linux x86_64; ONNX Runtime oraz wagi pobierane osobno.
+
+`benchmark.json` i `REPORT-v0.1.md` zachowują historyczny pomiar niezmienionego algorytmu top-k z wydania 0.1.0. Nie należy traktować tych czasów jako pomiarów inferencji lub czasu NL → DSL.
