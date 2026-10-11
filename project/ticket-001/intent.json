@@ -1,0 +1,99 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-001",
+  "summary": "bootstrap wellmanifest new-project 0.20.92 release",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-001/**",
+    "TODO.md",
+    "CHANGELOG.md",
+    "VERSION",
+    "project/TICKETS.md",
+    ".githooks/**",
+    ".gitignore",
+    ".gitattributes",
+    ".governance/**",
+    ".subactor/**",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".aider.conf.yml",
+    ".cursor/rules/**",
+    ".github/copilot-instructions.md",
+    ".github/workflows/new-project-governance.yml",
+    ".github/workflows/new-project-branch-hygiene.yml",
+    "project.bat",
+    "project.sh",
+    "project/**",
+    "scripts/install-agent-hosts.sh",
+    "scripts/runtime.sh",
+    "wellmanifest_governance.py",
+    "worktree-guard.yaml",
+    "pyproject.toml",
+    "Dockerfile"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "a5d0426bce9766fc329c65873e256100f1f7e4e3",
+    "targetBranch": "main",
+    "outcome": "Bootstrap wellmanifest/new-project 0.20.92 release.",
+    "nonGoals": [
+      "No product runtime behavior changes"
+    ],
+    "complexity": "L",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 15,
+      "maxAffectedComponents": 5,
+      "maxPublicInterfaceChanges": 3,
+      "maxRuntimeDependencies": 3
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Bootstrap governance standard to 0.20.92 release.",
+      "components": [
+        {
+          "name": "governance-bootstrap",
+          "paths": [
+            "**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "git revert"
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "bash project/governance-check.sh"
+        ],
+        "evidence": "Governance check passes cleanly."
+      }
+    ],
+    "standardAdoption": {
+      "sourceRepository": "wellmanifest/new-project",
+      "fromRevision": null,
+      "toRevision": "fcbb13e0ae04c688d825d5a87e2d2721dfab483d"
+    }
+  }
+}
