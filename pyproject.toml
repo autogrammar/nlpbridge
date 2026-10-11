@@ -24,3 +24,12 @@ nlbridge = "nlbridge.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["python"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "python"]
+addopts = "-p wellmanifest_governance"
+
+[tool.wellmanifest]
+standard = "0.20.92"
+revision = "fcbb13e0ae04c688d825d5a87e2d2721dfab483d"
+gate = "project/governance-check.sh"

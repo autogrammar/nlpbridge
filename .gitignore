@@ -16,3 +16,11 @@ python/nlbridge/_native/*
 
 /.subactor/leases/
 /.subactor/receipts/
+
+# Repository-local worktrees and operational state
+/.subactor/sessions/
+/.subactor/recovery/
+/.subactor/cache/
+/.subactor/snapshots/
+*.egg
+/target/
