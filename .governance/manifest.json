@@ -84,7 +84,7 @@
           "VERSION",
           "Dockerfile",
           ".github/workflows/new-project-branch-hygiene.yml",
-          "githooks/commit-msg",
+          ".githooks/commit-msg",
           "pyproject.toml"
         ]
       },
