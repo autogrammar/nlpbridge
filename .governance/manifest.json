@@ -82,7 +82,10 @@
           "worktree-guard.yaml",
           ".gitattributes",
           "VERSION",
-          "Dockerfile"
+          "Dockerfile",
+          ".github/workflows/new-project-branch-hygiene.yml",
+          "githooks/commit-msg",
+          "pyproject.toml"
         ]
       },
       "infrastructure": {
@@ -249,7 +252,7 @@
   "stacks": [],
   "standard": {
     "id": "wellmanifest/new-project",
-    "version": "0.20.92"
+    "version": "0.20.162"
   },
   "ticket": {
     "activeStatuses": [
